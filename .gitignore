@@ -1,0 +1,8 @@
+# tensquare project gitignore files
+.idea
+*.iml
+/tensquare-parent/tensquare_base/target/
+/tensquare-parent/tensquare_common/target/
+/tensquare-parent/tensquare_base/tensquare_base.iml
+/tensquare-parent/tensquare_common/tensquare_common.iml
+/tensquare-parent/tensquare-parent.iml
