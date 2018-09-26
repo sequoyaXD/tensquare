@@ -23,6 +23,6 @@ public class BaseExceptionHandle {
     @ExceptionHandler(value = Exception.class)  // 异常方法标记,value为需要捕获的异常类型
     @ResponseBody  // 必须设置响应给前端的数据为JSON格式
     public Result error(Exception e){
-        return new Result(false,e.getMessage(), StatusCode.ERROR);
+        return new Result(false, StatusCode.ERROR,e.getMessage());
     }
 }

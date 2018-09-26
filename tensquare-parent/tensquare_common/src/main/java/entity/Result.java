@@ -1,7 +1,5 @@
 package entity;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.Serializable;
 
 /**
@@ -19,13 +17,13 @@ public class Result implements Serializable {
     public Result() {
     }
 
-    public Result(Boolean flag, String message, Integer code) {
+    public Result(Boolean flag,Integer code , String message) {
         this.flag = flag;
         this.message = message;
         this.code = code;
     }
 
-    public Result(Boolean flag, String message, Integer code, Object data) {
+    public Result(Boolean flag, Integer code, String message,Object data) {
         this.flag = flag;
         this.message = message;
         this.code = code;
