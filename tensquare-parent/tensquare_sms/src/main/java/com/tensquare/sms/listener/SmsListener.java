@@ -35,7 +35,8 @@ public class SmsListener {
             if(sendSmsResponse.getCode().equals("OK")){
                 System.out.println("短信发送成功...");
             }else{
-                System.out.println("发送失败...");
+                System.out.println(sendSmsResponse.getCode()+"___"+sendSmsResponse.getRequestId());
+                System.out.println("发送失败..."+sendSmsResponse.getMessage());
             }
         } catch (Exception e) {
             System.out.println("发送失败"+e.getMessage());

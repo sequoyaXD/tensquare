@@ -74,8 +74,8 @@ public class SmsUtil {
     }
 
     public  QuerySendDetailsResponse querySendDetails(String mobile,String bizId) throws ClientException {
-        String accessKeyId =env.getProperty("accessKeyId");
-        String accessKeySecret = env.getProperty("accessKeySecret");
+        String accessKeyId =env.getProperty("aliyun.sms.accessKeyId");
+        String accessKeySecret = env.getProperty("aliyun.sms.accessKeySecret");
         //可自助调整超时时间
         System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
         System.setProperty("sun.net.client.defaultReadTimeout", "10000");

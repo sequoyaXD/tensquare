@@ -8,6 +8,10 @@ spring:
 aliyun:
   sms:
     tempCode: SMS_100735040
+    #tempCode: SMS_18355035
     signName: 物流系统
+    #signName: 君开信息科技
     accessKeyId: LTAI0DByuBGlQzS9
+    #accessKeyId: LTAIGcCuM7r9EZOr
     accessKeySecret: OygoBAVQRuCt4vf97Nfwav2NN8gcr2
+    #accessKeySecret: CS43qfiEBeVg2ZXXxT54VjPWioEiXP

@@ -1,25 +1,20 @@
 package com.tensquare.user.controller;
-import java.awt.*;
-import java.util.List;
-import java.util.Map;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.org.apache.regexp.internal.RE;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.tensquare.user.pojo.User;
 import com.tensquare.user.service.UserService;
-
 import entity.PageResult;
 import entity.Result;
 import entity.StatusCode;
+import io.jsonwebtoken.Claims;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpRequest;
+import org.springframework.web.bind.annotation.*;
+import util.JwtUtil;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 /**
  * 控制器层
  * @author Administrator
@@ -33,7 +28,10 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
-	
+	@Autowired
+	private HttpServletRequest request;
+	@Autowired
+	private JwtUtil jwtUtil;
 	/**
 	 * 查询全部数据
 	 * @return
@@ -100,10 +98,20 @@ public class UserController {
 	
 	/**
 	 * 删除
-	 * @param id
+	 * 	判断用户是否有权限进行删除 :
+	 * 		token一般以请求头的方式进行传递
+	 * 		大部分命名为 :
+	 * 				key : Authorization
+	 * 				value : Bearer token字符串
+	 * 	鉴权代码许多地方需要用到 , 将其使用springmvc的拦截器进行优化
 	 */
 	@RequestMapping(value="/{id}",method= RequestMethod.DELETE)
 	public Result delete(@PathVariable String id ){
+		// 判断用户是否有权限进行删除,管理员才有权限
+		Claims claims = (Claims) request.getAttribute("admin_claims");
+		if(claims==null){
+			return new Result(false , StatusCode.ACCESS_ERROR,"sorry,您的权限不足....");
+		}
 		userService.deleteById(id);
 		return new Result(true,StatusCode.OK,"删除成功");
 	}
@@ -121,5 +129,20 @@ public class UserController {
 	public Result register(@RequestBody User user,@PathVariable String code){
 		userService.register(user,code);
 		return new Result(true,StatusCode.OK,"注册成功");
+	}
+	// 用户登录 : 参数为mobile,password
+	@RequestMapping(value = "/login",method = RequestMethod.POST)
+	public Result login(@RequestBody Map<String,String> map){
+		User user = userService.login(map);
+		if(user!=null){
+			// 签发token
+			String token = jwtUtil.createJWT(user.getId(), user.getNickname(), "user");
+			// 将token返回给前端
+			Map<String,String> resultMap = new HashMap<>();
+			resultMap.put("name",user.getNickname());
+			resultMap.put("token",token);
+			return new Result(true,StatusCode.OK,"登陆成功",resultMap);
+		}
+		return new Result(true,StatusCode.USER_PASS_ERROR,"用户名或者密码有误");
 	}
 }

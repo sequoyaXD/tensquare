@@ -11,5 +11,13 @@
 
     <artifactId>tensquare_common</artifactId>
 
+    <dependencies>
+        <!--签发token-->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.6.0</version>
+        </dependency>
+    </dependencies>
 
 </project>

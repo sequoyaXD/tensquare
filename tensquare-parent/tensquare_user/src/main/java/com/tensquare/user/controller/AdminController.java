@@ -1,7 +1,10 @@
 package com.tensquare.user.controller;
+import java.awt.*;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.tensquare.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,6 +20,8 @@ import com.tensquare.user.service.AdminService;
 import entity.PageResult;
 import entity.Result;
 import entity.StatusCode;
+import util.JwtUtil;
+
 /**
  * 控制器层
  * @author Administrator
@@ -29,7 +34,8 @@ public class AdminController {
 
 	@Autowired
 	private AdminService adminService;
-	
+	@Autowired
+	private JwtUtil jwtUtil ;
 	
 	/**
 	 * 查询全部数据
@@ -104,5 +110,21 @@ public class AdminController {
 		adminService.deleteById(id);
 		return new Result(true,StatusCode.OK,"删除成功");
 	}
-	
+	// 管理员登录
+	@RequestMapping(value = "/login",method = RequestMethod.POST)
+	public Result login(@RequestBody Map<String,String> map){
+		Admin admin = adminService.login(map);
+		if(admin==null){
+			return new Result(true,StatusCode.USER_PASS_ERROR,"用户名或密码有误");
+		}
+		// 签发token
+		String token = jwtUtil.createJWT(admin.getId(), admin.getLoginname(), "admin");
+		// 将token返回给前端
+		Map<String,String> resultMap = new HashMap<>();
+		resultMap.put("name",admin.getLoginname());
+		resultMap.put("token",token);
+		return new Result(true,StatusCode.OK,"登录成功",resultMap);
+	}
+
+
 }

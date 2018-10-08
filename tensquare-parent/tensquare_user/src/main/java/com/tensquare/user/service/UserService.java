@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import org.springframework.util.DigestUtils;
@@ -38,15 +39,17 @@ public class UserService {
 	@Autowired
 	private UserDao userDao;
 	
-	@Autowired
+	@Autowired	// id生成对象
 	private IdWorker idWorker;
 
-	@Autowired
+	@Autowired	// redis模板
 	private RedisTemplate redisTemplate;
-	// 注入mq消息中间件模板对象
-	@Autowired
+
+	@Autowired// 注入mq消息中间件模板对象
 	private RabbitMessagingTemplate rabbitMessagingTemplate;
 
+	@Autowired// 注入加密器
+	private BCryptPasswordEncoder encoder ;
 	/**
 	 * 查询全部列表
 	 * @return
@@ -95,6 +98,7 @@ public class UserService {
 	 */
 	public void add(User user) {
 		user.setId( idWorker.nextId()+"" );
+		user.setPassword(encoder.encode(user.getPassword()));
 		userDao.save(user);
 	}
 
@@ -187,7 +191,7 @@ public class UserService {
 		map.put("code",code);
 		rabbitMessagingTemplate.convertAndSend("sms",map);
 	}
-
+	// 注册
 	public void register(User user, String code) {
     	// 从redis中取出用户验证码,进行校验
 		String redisCode =(String)redisTemplate.opsForValue().get("sms_" + user.getMobile());
@@ -199,9 +203,20 @@ public class UserService {
 		}
 		user.setId(idWorker.nextId()+"");
 		// 对用户密码加密
-		String newPwd = DigestUtils.md5DigestAsHex(user.getPassword().getBytes());
+		String newPwd = encoder.encode(user.getPassword());
 		user.setPassword(newPwd);
 		// 注册创建时间..
 		userDao.save(user);
+	}
+
+	// 用户登录
+	public User login(Map<String, String> map) {
+		String mobile = map.get("mobile");
+		String password = map.get("password");
+		User user = userDao.findByMobile(mobile);
+		if(user!=null && encoder.matches(password,user.getPassword())){
+			return user ;
+		}
+		return null ;
 	}
 }
