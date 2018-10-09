@@ -136,13 +136,32 @@ public class UserController {
 		User user = userService.login(map);
 		if(user!=null){
 			// 签发token
-			String token = jwtUtil.createJWT(user.getId(), user.getNickname(), "user");
+			String token = jwtUtil.createJWT(user.getId(), user.getMobile(), "user");
 			// 将token返回给前端
 			Map<String,String> resultMap = new HashMap<>();
-			resultMap.put("name",user.getNickname());
+			resultMap.put("name",user.getMobile());
 			resultMap.put("token",token);
 			return new Result(true,StatusCode.OK,"登陆成功",resultMap);
 		}
 		return new Result(true,StatusCode.USER_PASS_ERROR,"用户名或者密码有误");
 	}
+
+	// 更新用户关注数
+	@RequestMapping(value = "/updateFollowCount/{userid}/{x}")
+	public Result updateFollowCount(@PathVariable String userid , @PathVariable int x){
+		userService.updateFollowCount(userid,x);
+		return new Result(true,StatusCode.OK,"更新成功");
+	}
+
+
+
+	// 更新用户粉丝数
+	@RequestMapping(value = "/updateFansCount/{userid}/{x}")
+	public Result updateFansCount(@PathVariable String userid , @PathVariable int x){
+		userService.updateFansCount(userid,x);
+		return new Result(true,StatusCode.OK,"更新成功");
+	}
+
+
+
 }

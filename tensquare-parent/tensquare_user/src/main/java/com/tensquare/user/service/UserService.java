@@ -21,6 +21,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 import util.IdWorker;
 
@@ -218,5 +219,13 @@ public class UserService {
 			return user ;
 		}
 		return null ;
+	}
+	@Transactional
+    public void updateFollowCount(String userid, int x) {
+    	userDao.updateFollowCount(userid,x);
+    }
+	@Transactional
+	public void updateFansCount(String userid, int x) {
+		userDao.updateFansCount(userid,x);
 	}
 }

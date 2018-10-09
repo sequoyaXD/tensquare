@@ -2,7 +2,7 @@ server:
   port: 9008
 spring: 
   application:  
-    name: tensquare_user #指定服务名
+    name: tensquare-user #指定服务名
   datasource:  
     driverClassName: com.mysql.jdbc.Driver
     url: jdbc:mysql://192.168.66.128:3306/tensquare_user?characterEncoding=UTF8
@@ -19,4 +19,8 @@ jwt:
   config:
     key: itfly
     ttl: 3600000
-
+#eureka注册服务
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:6868/eureka
