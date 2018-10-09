@@ -1,0 +1,19 @@
+server:
+  port: 12000
+spring:
+  application:
+    name: tensquare-config
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://gitee.com/ityangfei/tensquare_config.git
+# 使用rabbitMQ , 监听配置中心文件的变化 , 一旦发生变化 , 触发其他微服务重新加载远程配置文件
+  rabbitmq:
+    host: 192.168.66.128
+# 暴露触发消息总线的地址
+management:
+  endpoints:
+    web:
+      exposure:
+        include: bus-refresh

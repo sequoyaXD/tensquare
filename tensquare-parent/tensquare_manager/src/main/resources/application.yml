@@ -1,0 +1,28 @@
+server:
+  port: 9012
+spring:
+  application:
+    name: tensquare-manager
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:6868/eureka
+jwt:
+  config:
+    key: itfly
+    ttl: 3600000
+#微服务网关配置
+zuul:
+  routes:
+    tensquare-base:
+      path: /label/**
+      serviceId: tensquare-base
+    tensquare-qa:
+      path: /qa/**
+      serviceId: tensquare-qa
+    tensquare-friend:
+      path: /friend/**
+      serviceId: tensquare-friend
+    tensquare-user:
+      path: /user/**
+      serviceId: tensquare-user

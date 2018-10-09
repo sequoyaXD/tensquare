@@ -19,3 +19,7 @@ jwt:
   config:
     key: itfly
     ttl: 3600000
+#开启Feign内置Hystrix熔断器
+feign:
+  hystrix:
+    enabled: true

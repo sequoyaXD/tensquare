@@ -1,5 +1,6 @@
 package com.tensquare.qa.client;
 
+import com.tensquare.qa.client.impl.LabelClientImpl;
 import entity.Result;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @Date: 2018/10/8 18:51
  * @Description:    远程调用微服务的接口
  */
-@FeignClient("tensquare-base") // 注入的微服务名称
+// value : 远程微服务名 ; fallback : 远程调用失败处理类
+@FeignClient(value = "tensquare-base",fallback = LabelClientImpl.class) // 注入的微服务名称
 public interface LabelClient {
     /*
         注意 :

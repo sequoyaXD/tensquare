@@ -24,6 +24,8 @@ public class JwtFilter extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // 从request请求头中获取token
         String auth = request.getHeader("Authorization");
+
+        System.out.println("auth= "+auth);
         if(auth!=null && auth.startsWith("Bearer ")){
             // 截取token字符串
             String token = auth.substring(7);

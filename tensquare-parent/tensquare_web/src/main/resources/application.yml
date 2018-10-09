@@ -1,0 +1,24 @@
+server:
+  port: 9011
+spring:
+  application:
+    name: tensquare-web
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:6868/eureka
+#微服务网关配置
+zuul:
+  routes:
+    tenquare-base:
+      path: /label/**   #拦截路径
+      serviceId: tensquare-base   #微服务名称
+    tensquare-qa:
+      path: /qa/**
+      serviceId: tensquare-qa
+    tensquare-friend:
+      path: /friend/**
+      serviceId: tensquare-friend
+    tensquare-user:
+      path: /user/**
+      serviceId: tensquare-user
